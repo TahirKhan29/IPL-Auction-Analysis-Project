@@ -44,19 +44,6 @@ LIMIT 10;
 
 SELECT 
 B.batsman,
-SUM(B.batsman_runs) AS total_runs,
-COUNT(*) AS total_balls,
-SUM(CASE WHEN B.is_wicket = 1 AND B.batsman = B.player_dismissed THEN 1 ELSE 0 END) AS dismissals,
-ROUND((SUM(B.batsman_runs) / NULLIF(SUM(CASE WHEN B.is_wicket = 1 AND B.batsman = B.player_dismissed THEN 1 ELSE 0 END), 0)),2) AS average
-FROM ipl_ball AS B
-INNER JOIN ipl_matches AS M ON B.id = M.id
-GROUP BY B.batsman
-HAVING COUNT(*) >= 500 
-ORDER BY average DESC
-LIMIT 10;  
-
-SELECT 
-B.batsman,
 COUNT(DISTINCT SUBSTRING(M.match_date, 7, 4)) AS seasons_played,
 SUM(B.batsman_runs) AS total_runs,
 COUNT(*) AS total_balls,
@@ -79,17 +66,6 @@ LIMIT 10;
 # and have played more the 2 ipl season. To do that you have to make a list of 10 players you want 
 # to bid in the auction so that when you try to grab them in auction you should not pay the amount greater
 # than you have in the purse for a particular player.
-
-SELECT B.batsman , 
-B.batting_team ,
-SUM(B.batsman_runs) AS total_runs,
-SUM(CASE WHEN B.batsman_runs IN (4,6) THEN 1 ELSE 0 END ) AS total_boundaries
-FROM ipl_ball AS B
-INNER JOIN ipl_matches AS M ON B.id = M.id
-GROUP BY B.batsman , B.batting_team
-HAVING  SUM(CASE WHEN B.batsman_runs IN (4,6) THEN 1 ELSE 0 END ) > 0
-ORDER BY total_boundaries DESC
-LIMIT 10;
 
 SELECT B.batsman , 
 B.batting_team ,
@@ -156,17 +132,7 @@ LIMIT 10;
 
 
 
-SELECT bowler,
-SUM(batsman_runs) AS runs_given,
-COUNT(ball) AS total_balls,
-SUM(CASE WHEN dismissal_kind IN ('caught', 'bowled', 'lbw') THEN 1 ELSE 0 END) AS total_wickets,
-COUNT(ball) / NULLIF(SUM(CASE WHEN dismissal_kind IN ('caught', 'bowled', 'lbw') THEN 1 ELSE 0 END), 0) AS strike_rate
-FROM ipl_ball
-WHERE extras_type NOT IN ('wides', 'noballs') 
-GROUP BY bowler
-HAVING total_balls > 500  
-ORDER BY strike_rate ASC  
-LIMIT 10;
+
 
 
 
